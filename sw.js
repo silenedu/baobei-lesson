@@ -1,7 +1,7 @@
 /* 家庭备课宝典 · Service Worker
  * 策略：导航/HTML 网络优先（保证课件更新即时生效），静态资源缓存优先并后台更新。
  */
-const CACHE = "flb-v3";
+const CACHE = "flb-v4";
 const SHELL = [
   ".", "index.html", "manifest.webmanifest",
   "css/style.css", "js/app.js", "js/data.js", "icons/icon.svg"
