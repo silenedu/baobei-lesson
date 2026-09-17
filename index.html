@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#FF8A5B" />
+  <title>家庭备课宝典 · 沪教语文启蒙</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="hdr-top">
+      <div class="logo">📚 家庭备课宝典</div>
+      <div class="hdr-sub">沪教五四学制 · 语文 + 人文素养启蒙</div>
+    </div>
+    <div id="dayStrip" class="day-strip"></div>
+  </header>
+
+  <main id="view" class="view"></main>
+
+  <nav class="tabbar">
+    <button class="tab" data-view="today"><span>🗓️</span>今日课表</button>
+    <button class="tab" data-view="overview"><span>🧭</span>课程总览</button>
+    <button class="tab" data-view="cards"><span>🃏</span>重点字卡</button>
+    <button class="tab" data-view="notes"><span>✍️</span>备课笔记</button>
+  </nav>
+
+  <!-- 课件详情弹层 -->
+  <div id="modal" class="modal-mask" hidden>
+    <div class="modal-card" id="modalCard"></div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
