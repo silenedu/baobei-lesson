@@ -531,6 +531,10 @@
             '<div class="flash-ex" id="fEx"></div></div>' +
         '</div></div>' +
         '<div class="flash-hint">👆 点卡片翻面看释义</div>' +
+        '<div class="flash-nav">' +
+          '<button id="fPrev">← 上一张</button>' +
+          '<button id="fNext">下一张 →</button>' +
+        '</div>' +
         '<div class="card-prog" id="fProg"></div>';
       viewEl.innerHTML = html;
       var ci = 0;
@@ -543,9 +547,13 @@
         $("#fEx").textContent = c.example ? "例：" + c.example : "";
         $("#fProg").textContent = "字卡 " + (ci + 1) + " / " + cards.length;
         $("#flash").classList.remove("flipped");
+        $("#fPrev").disabled = ci <= 0;
+        $("#fNext").disabled = ci >= cards.length - 1;
       }
       paint();
       $("#flash").onclick = function () { this.classList.toggle("flipped"); };
+      $("#fPrev").onclick = function () { if (ci > 0) { ci--; paint(); } };
+      $("#fNext").onclick = function () { if (ci < cards.length - 1) { ci++; paint(); } };
       $("[data-nav='-1']", viewEl).onclick = function () { if (hasPrev) { state.curDay--; saveState(); renderDayStrip(); renderCards(); } };
       $("[data-nav='1']", viewEl).onclick = function () { if (hasNext) { state.curDay++; saveState(); renderDayStrip(); renderCards(); } };
       state.cards[state.curDay] = true; saveState(); renderDayStrip();
