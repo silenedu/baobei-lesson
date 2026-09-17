@@ -309,3 +309,92 @@ body {
 @media (min-width: 560px) {
   .flashcard { height: 340px; }
 }
+
+/* ===================== 汉字启蒙 · 田字格 + 甲骨文 ===================== */
+.hz-grid-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 10px; }
+.hz-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-s);
+  padding: 12px 10px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.hz-oracle { text-align: center; }
+.hz-oracle-img {
+  width: 62px; height: 62px; margin: 0 auto; background: #FBF6EC;
+  border: 1px solid #E8DDC6; border-radius: 10px; padding: 4px;
+}
+.hz-oracle-img svg { width: 100%; height: 100%; display: block; }
+.hz-oracle-rad { display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 800; color: var(--accent-d); }
+.hz-oracle-label { font-size: 11px; color: var(--ink-soft); margin-top: 3px; }
+.hz-main { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.hz-grid {
+  width: 150px; height: 150px; position: relative; border-radius: 8px;
+  background-color: #FCFBF6;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect x='1.5' y='1.5' width='147' height='147' fill='none' stroke='%23CDB89A' stroke-width='2'/%3E%3Cline x1='75' y1='3' x2='75' y2='147' stroke='%23D8C7A8' stroke-width='1' stroke-dasharray='4 4'/%3E%3Cline x1='3' y1='75' x2='147' y2='75' stroke='%23D8C7A8' stroke-width='1' stroke-dasharray='4 4'/%3E%3C/svg%3E");
+  background-size: cover; background-position: center; border: 2px solid #CDB89A;
+}
+.hz-target { position: absolute; inset: 0; }
+.hz-play {
+  background: linear-gradient(135deg, var(--accent), var(--accent-d));
+  color: #fff; border: none; border-radius: 20px; padding: 6px 18px;
+  font-size: 13px; font-weight: 700; font-family: var(--sans); cursor: pointer;
+}
+.hz-play:active { opacity: .85; }
+.hz-info { text-align: center; }
+.hz-char { font-size: 28px; font-weight: 800; color: var(--ink); line-height: 1.1; }
+.hz-py { font-size: 15px; color: var(--primary-d); font-weight: 700; margin-top: 2px; }
+.hz-meta { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+.hz-theory { font-size: 13px; color: var(--ink); line-height: 1.6; margin-top: 5px; }
+.hz-words { font-size: 13px; color: var(--accent-d); font-weight: 600; margin-top: 4px; }
+
+/* 课件弹层允许滚动（汉字启蒙有 4 字） */
+.modal-card { max-height: 90vh; overflow-y: auto; }
+
+/* ===================== 字卡 · 不熟练 + 出处 ===================== */
+.deck-tag { font-size: 12px; font-weight: 600; color: var(--primary-d); background: var(--surface-2); padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
+.flash-weak { font-size: 12px; color: var(--warn); font-weight: 700; min-height: 0; }
+.flash-src { font-size: 11px; color: var(--ink-soft); margin-top: 8px; }
+.flash-actions { display: flex; gap: 8px; justify-content: center; margin-top: 14px; }
+.flash-navbtn {
+  flex: 1; max-width: 110px; background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: 22px; padding: 9px 6px; font-weight: 700; font-size: 14px; color: var(--ink);
+  font-family: var(--sans); cursor: pointer;
+}
+.flash-navbtn:disabled { opacity: .4; cursor: default; }
+.flash-weakbtn {
+  background: linear-gradient(135deg, var(--warn), #C2624E); color: #fff; border: none;
+  border-radius: 22px; padding: 9px 16px; font-weight: 700; font-size: 14px;
+  font-family: var(--sans); cursor: pointer;
+}
+.flash-weakbtn:active { opacity: .85; }
+
+/* ===================== 横竖屏切换按钮 ===================== */
+.rotate-btn {
+  position: fixed; right: 14px; bottom: 76px; z-index: 40;
+  width: 46px; height: 46px; border-radius: 50%; border: none;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff; font-size: 22px; line-height: 1; box-shadow: var(--shadow-s);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.rotate-btn:active { opacity: .85; }
+@media (min-width: 560px) { .rotate-btn { bottom: 82px; } }
+
+/* ===================== 横屏（landscape）适配 ===================== */
+@media (orientation: landscape) {
+  .app-header { padding: 8px 16px 6px; }
+  .hdr-top { gap: 10px; }
+  .logo { font-size: 18px; }
+  .day-hero { padding: 12px 16px; }
+  .dh-stats { flex-wrap: wrap; }
+  .sec-grid { grid-template-columns: repeat(4, 1fr); }
+  .hz-grid-wrap { grid-template-columns: repeat(4, 1fr); }
+  .quiz-mask .quiz-body { padding: 14px 22px; }
+  .flashcard { height: 74vh; }
+  .modal-card { max-height: 94vh; }
+  .rotate-btn { bottom: 72px; right: 16px; }
+}
+@media (orientation: landscape) and (max-height: 480px) {
+  .app-header { position: static; }
+  .day-hero { margin: 8px 10px; }
+  .tabbar { padding: 4px 6px; }
+  .tab span { font-size: 16px; }
+}
+
