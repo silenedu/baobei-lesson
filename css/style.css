@@ -268,7 +268,15 @@ body {
 .flash-mean { font-size: 19px; font-weight: 700; color: var(--ink); line-height: 1.5; }
 .flash-ex { font-size: 15px; color: var(--ink-soft); margin-top: 10px; }
 .flash-hint { text-align:center; font-size: 13px; color: var(--ink-soft); margin-top: 12px; }
-.card-prog { text-align:center; margin-top: 10px; font-size: 14px; color: var(--ink-soft); font-weight:700; }
+.flash-nav { display: flex; gap: 12px; justify-content: center; margin-top: 14px; }
+.flash-nav button {
+  flex: 1; max-width: 160px; padding: 11px 10px; border: none; border-radius: 999px;
+  background: var(--surface-2); color: var(--ink); font-size: 15px; font-weight: 700; cursor: pointer;
+  box-shadow: var(--shadow-s); transition: filter .15s;
+}
+.flash-nav button:active { filter: brightness(.95); }
+.flash-nav button:disabled { opacity: .4; cursor: default; box-shadow: none; }
+.card-prog { text-align:center; margin-top: 12px; font-size: 14px; color: var(--ink-soft); font-weight:700; }
 
 /* Notes */
 .notes-box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow-s); }
