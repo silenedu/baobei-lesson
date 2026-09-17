@@ -23,6 +23,8 @@
   state.practice = state.practice || {};      // {dayIdx:true}
   state.cards = state.cards || {};            // {dayIdx:true}
   state.notes = state.notes || {};            // {dayIdx:"text"}
+  state.weak = state.weak || {};              // {cardKey: 不熟练次数}
+  state.seen = state.seen || {};              // {cardKey: 上次出现-dayIdx}
 
   /* ---------- 工具 ---------- */
   // 儿童友好：拼音中的字母 a 渲染为 ɑ（U+0251）
@@ -114,7 +116,7 @@
         '<div class="dh-stats">' +
           '<span class="stat-pill">板块 <b>' + d.items.length + '</b></span>' +
           '<span class="stat-pill">练习 <b>' + d.practice.length + '</b> 题</span>' +
-          '<span class="stat-pill">字卡 <b>' + d.flashcards.length + '</b> 张</span>' +
+          '<span class="stat-pill">字卡 <b>' + buildDeck(state.curDay).length + '</b> 张</span>' +
           '<span class="stat-pill">已完成 <b>' + doneCount + '/' + d.items.length + '</b></span>' +
         '</div>' +
       '</div>';
@@ -212,6 +214,7 @@
     var speakBtn = speakLine ? '<button class="speak-btn" data-speak="' + esc(speakLine) + '">🔊 朗读</button>' : "";
     card.innerHTML = head + '<div style="display:flex;justify-content:flex-end;margin-bottom:6px;">' + speakBtn + '</div>' + body + tip;
     mask.hidden = false;
+    if (it.type === "hanzi") initHanziWriters(card);
 
     $("[data-close]", card).onclick = closeModal;
     mask.onclick = function (e) { if (e.target === mask) closeModal(); };
@@ -276,22 +279,58 @@
   }
 
   function renderHanzi(it) {
-    var h = "";
+    var h = '<div class="hz-grid-wrap">';
     (it.chars || []).forEach(function (c) {
-      h += '<div class="char-box">' +
-        '<div class="char-big">' + esc(c.char) + '</div>' +
-        '<div class="char-info">' +
-          '<div class="ci-py">' + kidA(esc(c.pinyin)) + '</div>' +
-          '<div class="ci-meta">部首：' + esc(c.radical) + ' · ' + (c.strokes) + ' 画</div>' +
-          '<div class="ci-theory">' + esc(c.theory) + '</div>' +
-        '</div></div>';
-      if (c.words && c.words.length) {
-        h += '<div class="label">组词</div><div class="word-row">';
-        c.words.forEach(function (w) { h += '<span class="word-tag">' + esc(w) + '</span>'; });
-        h += '</div>';
-      }
+      var oracle = (window.ORACLE && window.ORACLE[c.char]) ? window.ORACLE[c.char] : "";
+      var hasStroke = !!(window.HZ && window.HZ[c.char]);
+      var oracleBox = oracle
+        ? '<div class="hz-oracle"><div class="hz-oracle-img">' + oracle + '</div>' +
+          '<div class="hz-oracle-label">甲骨文</div></div>'
+        : '<div class="hz-oracle"><div class="hz-oracle-img hz-oracle-rad">' + esc(c.char) + '</div>' +
+          '<div class="hz-oracle-label">偏旁</div></div>';
+      var playBtn = hasStroke ? '<button class="hz-play" data-hz="' + esc(c.char) + '">▶ 笔顺</button>' : "";
+      h += '' +
+        '<div class="hz-card">' +
+          oracleBox +
+          '<div class="hz-main">' +
+            '<div class="hz-grid"><div class="hz-target" id="hw-' + esc(c.char) + '"></div></div>' +
+            playBtn +
+          '</div>' +
+          '<div class="hz-info">' +
+            '<div class="hz-char">' + esc(c.char) + '</div>' +
+            '<div class="hz-py">' + kidA(esc(c.pinyin)) + '</div>' +
+            '<div class="hz-meta">部首 ' + esc(c.radical) + ' · ' + (c.strokes) + ' 画</div>' +
+            '<div class="hz-theory">' + esc(c.theory) + '</div>' +
+            (c.words && c.words.length ? '<div class="hz-words">组词：' + c.words.map(esc).join(" · ") + '</div>' : '') +
+          '</div>' +
+        '</div>';
     });
+    h += '</div>';
     return h;
+  }
+
+  // 田字格笔顺播放：在课件弹层渲染后初始化（元素需已在 DOM 中）
+  function initHanziWriters(root) {
+    var writers = {};
+    $all(".hz-target", root).forEach(function (el) {
+      var ch = el.id.replace(/^hw-/, "");
+      if (!window.HanziWriter || !window.HZ || !window.HZ[ch]) return;
+      try {
+        var w = window.HanziWriter.create(el, ch, {
+          width: 150, height: 150, padding: 10,
+          showOutline: true, showCharacter: true,
+          strokeColor: "#4a8c6f", outlineColor: "#cfe0d6", drawingColor: "#5FA98C",
+          charDataLoader: function (c, onLoad) { onLoad(window.HZ[c]); }
+        });
+        writers[ch] = w;
+      } catch (e) {}
+    });
+    $all(".hz-play", root).forEach(function (b) {
+      b.onclick = function () { var w = writers[b.dataset.hz]; if (w) { w.animateCharacter(); } };
+    });
+    // 打开时自动播放第一个字，给孩子一个示范
+    var first = Object.keys(writers)[0];
+    if (first) setTimeout(function () { try { writers[first].animateCharacter(); } catch (e) {} }, 450);
   }
 
   function renderChuantong(it) {
@@ -507,57 +546,111 @@
     });
   }
 
-  /* ---------- 字卡 ---------- */
+  /* ---------- 字卡（遗忘曲线混合 8 张）---------- */
+  // 构建当日牌组：当日新卡 4 张 + 往日复习卡（按遗忘曲线间隔 + 不熟练权重）补足至 8 张
+  function buildDeck(dayIdx) {
+    var d = C[dayIdx];
+    var newKeys = (d.flashcards || []).map(function (_, i) { return dayIdx + ":" + i; });
+    var pool = newKeys.slice();
+    for (var di = 0; di < dayIdx; di++) {
+      (C[di].flashcards || []).forEach(function (_, i) { pool.push(di + ":" + i); });
+    }
+    // 评分：不熟练次数 ×3 + 间隔天数；间隔越大越该复习
+    var scored = pool.map(function (key) {
+      var weak = state.weak[key] || 0;
+      var seen = state.seen[key];
+      var gap = (seen == null) ? 99 : (dayIdx - seen);
+      return { key: key, score: weak * 3 + gap };
+    });
+    var review = scored.filter(function (s) { return s.key.indexOf(dayIdx + ":") !== 0; })
+      .sort(function (a, b) { return b.score - a.score; })
+      .slice(0, Math.max(0, 8 - newKeys.length))
+      .map(function (s) { return s.key; });
+    var deck = newKeys.concat(review);
+    return shuffle(deck).slice(0, 8);
+  }
+
+  function cardByKey(key) {
+    var p = key.split(":"); var di = +p[0], ci = +p[1];
+    var c = (C[di].flashcards || [])[ci] || { word: "?", pinyin: "", mean: "" };
+    return { card: c, dayIdx: di };
+  }
+
   function renderCards() {
     var d = C[state.curDay];
-    var cards = d.flashcards || [];
     var hasPrev = state.curDay > 0, hasNext = state.curDay < C.length - 1;
+    var deck = buildDeck(state.curDay);
     var html = '' +
       '<div class="card-daybar">' +
-        '<div style="font-size:16px;font-weight:800;">' + esc(d.date) + ' · ' + esc(d.theme) + '</div>' +
+        '<div style="font-size:16px;font-weight:800;">' + esc(d.date) + ' · ' + esc(d.theme) +
+          ' <span class="deck-tag">每日 8 张</span></div>' +
         '<div class="card-nav">' +
           '<button data-nav="-1"' + (hasPrev ? "" : " disabled") + '>← 前一天</button>' +
           '<button data-nav="1"' + (hasNext ? "" : " disabled") + '>后一天 →</button>' +
         '</div>' +
       '</div>';
-    if (!cards.length) {
+    if (!deck.length) {
       viewEl.innerHTML = html + '<div class="empty">这一天还没有字卡～</div>';
-    } else {
-      html += '' +
-        '<div class="flashcard" id="flash"><div class="flash-inner">' +
-          '<div class="flash-face flash-front"><div class="flash-emoji" id="fEmoji"></div>' +
-            '<div class="flash-word" id="fWord"></div><div class="flash-py" id="fPy"></div></div>' +
-          '<div class="flash-face flash-back"><div class="flash-mean" id="fMean"></div>' +
-            '<div class="flash-ex" id="fEx"></div></div>' +
-        '</div></div>' +
-        '<div class="flash-hint">👆 点卡片翻面看释义</div>' +
-        '<div class="flash-nav">' +
-          '<button id="fPrev">← 上一张</button>' +
-          '<button id="fNext">下一张 →</button>' +
-        '</div>' +
-        '<div class="card-prog" id="fProg"></div>';
-      viewEl.innerHTML = html;
-      var ci = 0;
-      function paint() {
-        var c = cards[ci];
-        $("#fEmoji").textContent = c.emoji || "🔤";
-        $("#fWord").textContent = c.word;
-        $("#fPy").textContent = kidA(c.pinyin || "");
-        $("#fMean").textContent = c.mean || "";
-        $("#fEx").textContent = c.example ? "例：" + c.example : "";
-        $("#fProg").textContent = "字卡 " + (ci + 1) + " / " + cards.length;
-        $("#flash").classList.remove("flipped");
-        $("#fPrev").disabled = ci <= 0;
-        $("#fNext").disabled = ci >= cards.length - 1;
-      }
-      paint();
-      $("#flash").onclick = function () { this.classList.toggle("flipped"); };
-      $("#fPrev").onclick = function () { if (ci > 0) { ci--; paint(); } };
-      $("#fNext").onclick = function () { if (ci < cards.length - 1) { ci++; paint(); } };
-      $("[data-nav='-1']", viewEl).onclick = function () { if (hasPrev) { state.curDay--; saveState(); renderDayStrip(); renderCards(); } };
-      $("[data-nav='1']", viewEl).onclick = function () { if (hasNext) { state.curDay++; saveState(); renderDayStrip(); renderCards(); } };
-      state.cards[state.curDay] = true; saveState(); renderDayStrip();
+      bindDayNav(hasPrev, hasNext);
+      return;
     }
+    html += '' +
+      '<div class="flashcard" id="flash"><div class="flash-inner">' +
+        '<div class="flash-face flash-front"><div class="flash-emoji" id="fEmoji"></div>' +
+          '<div class="flash-word" id="fWord"></div><div class="flash-py" id="fPy"></div>' +
+          '<div class="flash-weak" id="fWeak"></div></div>' +
+        '<div class="flash-face flash-back"><div class="flash-mean" id="fMean"></div>' +
+          '<div class="flash-ex" id="fEx"></div>' +
+          '<div class="flash-src" id="fSrc"></div></div>' +
+      '</div></div>' +
+      '<div class="flash-hint">👆 点卡片翻面看释义 · 觉得没记住就点「不熟练」</div>' +
+      '<div class="flash-actions">' +
+        '<button class="flash-navbtn" id="fPrev">← 上一张</button>' +
+        '<button class="flash-weakbtn" id="fWeakBtn">👎 不熟练</button>' +
+        '<button class="flash-navbtn" id="fNext">下一张 →</button>' +
+      '</div>' +
+      '<div class="card-prog" id="fProg"></div>';
+    viewEl.innerHTML = html;
+
+    var ci = 0;
+    function paint() {
+      var key = deck[ci];
+      var info = cardByKey(key);
+      var c = info.card;
+      var weak = state.weak[key] || 0;
+      $("#fEmoji").textContent = c.emoji || "🔤";
+      $("#fWord").textContent = c.word;
+      $("#fPy").textContent = kidA(c.pinyin || "");
+      $("#fMean").textContent = c.mean || "";
+      $("#fEx").textContent = c.example ? "例：" + c.example : "";
+      $("#fSrc").textContent = "出自：" + esc(C[info.dayIdx].date) + " " + esc(C[info.dayIdx].theme);
+      $("#fWeak").textContent = weak > 0 ? ("🔁 需复习 ×" + weak) : "";
+      $("#fWeak").style.display = weak > 0 ? "block" : "none";
+      $("#fProg").textContent = "字卡 " + (ci + 1) + " / " + deck.length;
+      $("#flash").classList.remove("flipped");
+      $("#fPrev").disabled = ci <= 0;
+      $("#fNext").disabled = ci >= deck.length - 1;
+      state.seen[key] = state.curDay; saveState();
+    }
+    paint();
+    $("#flash").onclick = function () { this.classList.toggle("flipped"); };
+    $("#fPrev").onclick = function () { if (ci > 0) { ci--; paint(); } };
+    $("#fNext").onclick = function () { if (ci < deck.length - 1) { ci++; paint(); } };
+    $("#fWeakBtn").onclick = function () {
+      var key = deck[ci];
+      state.weak[key] = (state.weak[key] || 0) + 1; saveState();
+      // 把这张移到牌组末尾，本次练习里再出现一次；以后权重更高
+      deck.push(deck.splice(ci, 1)[0]);
+      if (ci >= deck.length - 1) ci = 0; else ci++;
+      paint();
+    };
+    bindDayNav(hasPrev, hasNext);
+    state.cards[state.curDay] = true; saveState(); renderDayStrip();
+  }
+
+  function bindDayNav(hasPrev, hasNext) {
+    $("[data-nav='-1']", viewEl).onclick = function () { if (hasPrev) { state.curDay--; saveState(); renderDayStrip(); renderCards(); } };
+    $("[data-nav='1']", viewEl).onclick = function () { if (hasNext) { state.curDay++; saveState(); renderDayStrip(); renderCards(); } };
   }
 
   /* ---------- 备课笔记 ---------- */
@@ -579,6 +672,24 @@
     viewEl.innerHTML = html;
     $("#noteArea").oninput = function () {
       state.notes[state.curDay] = this.value; saveState();
+    };
+  }
+
+  /* ---------- 横竖屏切换 ---------- */
+  var rotateBtn = $("#rotateBtn");
+  if (rotateBtn) {
+    rotateBtn.onclick = function () {
+      try {
+        if (screen.orientation && screen.orientation.lock && screen.orientation.unlock) {
+          var isLand = ((screen.orientation.angle || 0) % 180) !== 0;
+          var p = isLand ? screen.orientation.lock("portrait") : screen.orientation.lock("landscape");
+          (p && p.catch) ? p.catch(function () { /* 部分浏览器需全屏/PWA 才允许，忽略 */ }) : 0;
+        } else {
+          alert("请手动旋转手机屏幕（横放/竖放）来切换方向～");
+        }
+      } catch (e) {
+        alert("请手动旋转手机屏幕来切换横竖屏～");
+      }
     };
   }
 
