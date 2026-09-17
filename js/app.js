@@ -578,4 +578,14 @@
   $all(".tab").forEach(function (b) { b.onclick = function () { setView(b.dataset.view); }; });
   renderDayStrip();
   setView("today");
+
+  /* ---------- Service Worker（PWA 离线 + 可安装）---------- */
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      var v = window.__SW_VER || "v1";
+      navigator.serviceWorker.register("sw.js?v=" + v).then(function () {
+        navigator.serviceWorker.addEventListener("controllerchange", function () { location.reload(); });
+      }).catch(function () { /* 离线环境静默失败 */ });
+    });
+  }
 })();
