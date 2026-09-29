@@ -214,7 +214,7 @@
     var speakBtn = speakLine ? '<button class="speak-btn" data-speak="' + esc(speakLine) + '">🔊 朗读</button>' : "";
     card.innerHTML = head + '<div style="display:flex;justify-content:flex-end;margin-bottom:6px;">' + speakBtn + '</div>' + body + tip;
     mask.hidden = false;
-    if (it.type === "hanzi") initHanziWriters(card);
+    if (it.type === "hanzi") initHanziDeck(card);
 
     $("[data-close]", card).onclick = closeModal;
     mask.onclick = function (e) { if (e.target === mask) closeModal(); };
@@ -230,6 +230,8 @@
     if (it.type === "meiwen") return (it.excerpt || "");
     if (it.type === "chuantong") return (it.intro || "");
     if (it.type === "hanzi") return (it.chars || []).map(function (c) { return c.char; }).join(" ");
+    if (it.type === "lunyu") return (it.lines || []).map(function (l) { return l.text; }).join("");
+    if (it.type === "xiaoguwen" || it.type === "qianziwen") return (it.title || "") + "。" + (it.lines || []).join("");
     return "";
   }
 
@@ -243,6 +245,9 @@
       case "chuantong": return renderChuantong(it);
       case "meiwen": return renderMeiwen(it);
       case "shenhua": return renderShenhua(it);
+      case "lunyu": return renderLunyu(it);
+      case "xiaoguwen": return renderXiaoguwen(it);
+      case "qianziwen": return renderQianziwen(it);
       default: return esc(JSON.stringify(it));
     }
   }
@@ -278,9 +283,57 @@
     return h;
   }
 
+  // 难度徽章（小学 / 初中）
+  function gradeBadge(it) {
+    return it.grade ? '<span class="gx-grade gx-' + (it.grade === "初中" ? "mid" : "pri") + '">' + esc(it.grade) + '</span>' : "";
+  }
+
+  // 论语金句：一句一卡（原文 + 拼音 + 译文 + 趣味解读）
+  function renderLunyu(it) {
+    var h = '<div class="label">📚 论语 · 孔子' + gradeBadge(it) + '</div>';
+    (it.lines || []).forEach(function (ln) {
+      h += '<div class="lx-item">' +
+        '<div class="lx-text">' + esc(ln.text) + '</div>' +
+        (ln.py ? '<div class="lx-py">' + kidA(esc(ln.py)) + '</div>' : "") +
+        '<div class="lx-mean">💬 ' + esc(ln.mean || "") + '</div>' +
+        (ln.fun ? '<div class="lx-fun">🎈 ' + esc(ln.fun) + '</div>' : "") +
+        '</div>';
+    });
+    return h;
+  }
+
+  // 小古文：原文（楷体+拼音）→ 注释锦囊 → 译文 → 趣味点
+  function renderXiaoguwen(it) {
+    var h = '<div class="label">🖋️ 小古文 · 原文' + gradeBadge(it) + '</div>' + poemHTML(it.lines, it.py);
+    if (it.notes && it.notes.length) {
+      h += '<div class="label">注释小锦囊</div><div class="xw-notes">' +
+        it.notes.map(function (n) { return '<span class="xw-chip"><b>' + esc(n.w) + '</b> ' + esc(n.m) + '</span>'; }).join("") +
+        '</div>';
+    }
+    h += '<div class="label">译文</div><div class="gushi-yi">' + esc(it.yi || "") + '</div>';
+    if (it.fun) h += '<div class="lx-fun" style="margin:8px 0 0;">🎈 ' + esc(it.fun) + '</div>';
+    return h;
+  }
+
+  // 千字文：四字句（楷体+拼音）→ 逐句讲 → 趣味点
+  function renderQianziwen(it) {
+    var h = '<div class="label">🌌 千字文' + gradeBadge(it) + '</div>' + poemHTML(it.lines, it.py);
+    if (it.pairs && it.pairs.length) {
+      h += '<div class="label">逐句讲</div><div class="qw-pairs">' +
+        it.pairs.map(function (p) {
+          return '<div class="qw-pair"><span class="qw-t">' + esc(p.text) + '</span><span class="qw-m">' + esc(p.mean) + '</span></div>';
+        }).join("") + '</div>';
+    }
+    if (it.fun) h += '<div class="lx-fun" style="margin:8px 0 0;">🎈 ' + esc(it.fun) + '</div>';
+    return h;
+  }
+
+  // 汉字启蒙 · 字卡滑动展示：每张卡片一个字，左右滑动 / 点箭头切换
   function renderHanzi(it) {
-    var h = '<div class="hz-grid-wrap">';
-    (it.chars || []).forEach(function (c) {
+    var cards = (it.chars || []);
+    if (!cards.length) return '<div class="empty">这一节还没有汉字～</div>';
+    var track = "";
+    cards.forEach(function (c) {
       var oracle = (window.ORACLE && window.ORACLE[c.char]) ? window.ORACLE[c.char] : "";
       var hasStroke = !!(window.HZ && window.HZ[c.char]);
       var oracleBox = oracle
@@ -289,13 +342,11 @@
         : '<div class="hz-oracle"><div class="hz-oracle-img hz-oracle-rad">' + esc(c.char) + '</div>' +
           '<div class="hz-oracle-label">偏旁</div></div>';
       var playBtn = hasStroke ? '<button class="hz-play" data-hz="' + esc(c.char) + '">▶ 笔顺</button>' : "";
-      h += '' +
-        '<div class="hz-card">' +
+      track += '' +
+        '<div class="hz-flash">' +
           oracleBox +
-          '<div class="hz-main">' +
-            '<div class="hz-grid"><div class="hz-target" id="hw-' + esc(c.char) + '"></div></div>' +
-            playBtn +
-          '</div>' +
+          '<div class="hz-grid"><div class="hz-target" data-hz="' + esc(c.char) + '"></div></div>' +
+          playBtn +
           '<div class="hz-info">' +
             '<div class="hz-char">' + esc(c.char) + '</div>' +
             '<div class="hz-py">' + kidA(esc(c.pinyin)) + '</div>' +
@@ -305,32 +356,78 @@
           '</div>' +
         '</div>';
     });
-    h += '</div>';
-    return h;
+    return '' +
+      '<div class="hz-deck" id="hzDeck">' +
+        '<div class="hz-track" id="hzTrack">' + track + '</div>' +
+        '<div class="hz-controls">' +
+          '<button class="hz-prev" id="hzPrev">‹</button>' +
+          '<div class="hz-prog" id="hzProg"></div>' +
+          '<button class="hz-next" id="hzNext">›</button>' +
+        '</div>' +
+        '<div class="hz-hint">👆 左右滑动切换汉字 · 点「▶ 笔顺」看书写顺序</div>' +
+      '</div>';
   }
 
-  // 田字格笔顺播放：在课件弹层渲染后初始化（元素需已在 DOM 中）
-  function initHanziWriters(root) {
+  // 田字格笔顺播放 + 字卡滑动：在课件弹层渲染后初始化（元素需已在 DOM 中）
+  function initHanziDeck(card) {
+    var deck = $("#hzDeck", card);
+    if (!deck) return;
+    var track = $("#hzTrack", deck);
+    var targets = $all(".hz-target", deck);
+    var total = targets.length;
     var writers = {};
-    $all(".hz-target", root).forEach(function (el) {
-      var ch = el.id.replace(/^hw-/, "");
+    targets.forEach(function (el) {
+      var ch = el.dataset.hz;
       if (!window.HanziWriter || !window.HZ || !window.HZ[ch]) return;
       try {
-        var w = window.HanziWriter.create(el, ch, {
+        writers[ch] = window.HanziWriter.create(el, ch, {
           width: 150, height: 150, padding: 10,
           showOutline: true, showCharacter: true,
           strokeColor: "#4a8c6f", outlineColor: "#cfe0d6", drawingColor: "#5FA98C",
           charDataLoader: function (c, onLoad) { onLoad(window.HZ[c]); }
         });
-        writers[ch] = w;
       } catch (e) {}
     });
-    $all(".hz-play", root).forEach(function (b) {
-      b.onclick = function () { var w = writers[b.dataset.hz]; if (w) { w.animateCharacter(); } };
+    $all(".hz-play", deck).forEach(function (b) {
+      b.onclick = function (e) {
+        if (e) e.stopPropagation();
+        var w = writers[b.dataset.hz]; if (w) { w.animateCharacter(); }
+      };
     });
-    // 打开时自动播放第一个字，给孩子一个示范
-    var first = Object.keys(writers)[0];
-    if (first) setTimeout(function () { try { writers[first].animateCharacter(); } catch (e) {} }, 450);
+    var idx = 0;
+    function go(i) {
+      if (!document.body.contains(deck)) return;
+      idx = Math.max(0, Math.min(total - 1, i));
+      track.style.transform = "translateX(-" + (idx * 100) + "%)";
+      $("#hzProg", deck).textContent = "汉字 " + (idx + 1) + " / " + total;
+      $("#hzPrev", deck).disabled = idx <= 0;
+      $("#hzNext", deck).disabled = idx >= total - 1;
+      var ch = (targets[idx] && targets[idx].dataset.hz) || null;
+      if (ch && writers[ch]) setTimeout(function () { try { writers[ch].animateCharacter(); } catch (e) {} }, 360);
+    }
+    $("#hzPrev", deck).onclick = function () { go(idx - 1); };
+    $("#hzNext", deck).onclick = function () { go(idx + 1); };
+    // 触摸滑动
+    var sx = null;
+    deck.addEventListener("touchstart", function (e) {
+      sx = (e.touches && e.touches[0]) ? e.touches[0].clientX : null;
+    }, { passive: true });
+    deck.addEventListener("touchend", function (e) {
+      if (sx == null) return;
+      var cx = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : sx;
+      var dx = cx - sx;
+      if (dx > 45) go(idx - 1); else if (dx < -45) go(idx + 1);
+      sx = null;
+    });
+    // 鼠标拖拽（桌面预览）
+    var mx = null;
+    deck.addEventListener("mousedown", function (e) { mx = e.clientX; });
+    window.addEventListener("mouseup", function (e) {
+      if (mx == null) return;
+      var dx = e.clientX - mx; mx = null;
+      if (dx > 45) go(idx - 1); else if (dx < -45) go(idx + 1);
+    });
+    go(0);
   }
 
   function renderChuantong(it) {
