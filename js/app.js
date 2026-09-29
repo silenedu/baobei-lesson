@@ -232,6 +232,9 @@
     if (it.type === "hanzi") return (it.chars || []).map(function (c) { return c.char; }).join(" ");
     if (it.type === "lunyu") return (it.lines || []).map(function (l) { return l.text; }).join("");
     if (it.type === "xiaoguwen" || it.type === "qianziwen") return (it.title || "") + "。" + (it.lines || []).join("");
+    if (it.type === "pianpang") return (it.name || "") + "。" + (it.chars || []).map(function (c) { return c.c; }).join("、");
+    if (it.type === "yanyu") return (it.lines || []).join("");
+    if (it.type === "xiehouyu") return (it.first || "") + "，" + (it.second || "");
     return "";
   }
 
@@ -248,6 +251,9 @@
       case "lunyu": return renderLunyu(it);
       case "xiaoguwen": return renderXiaoguwen(it);
       case "qianziwen": return renderQianziwen(it);
+      case "pianpang": return renderPianpang(it);
+      case "yanyu": return renderYanyu(it);
+      case "xiehouyu": return renderXiehouyu(it);
       default: return esc(JSON.stringify(it));
     }
   }
@@ -326,6 +332,51 @@
     }
     if (it.fun) h += '<div class="lx-fun" style="margin:8px 0 0;">🎈 ' + esc(it.fun) + '</div>';
     return h;
+  }
+
+  // 偏旁识字：偏旁大字 + 家族成员字卡
+  function renderPianpang(it) {
+    var h = '<div class="label">🧩 偏旁识字' + gradeBadge(it) + '</div>' +
+      '<div class="pp-hero">' +
+        '<div class="pp-radical">' + esc(it.radical) + '</div>' +
+        '<div class="pp-side">' +
+          '<div class="pp-name">' + esc(it.name) + '</div>' +
+          '<div class="pp-py">' + kidA(esc(it.py || "")) + '</div>' +
+          '<div class="pp-origin">就是「' + esc(it.origin) + '」家族</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="label">家族成员</div><div class="pp-chars">' +
+      (it.chars || []).map(function (c) {
+        return '<span class="pp-char"><b>' + esc(c.c) + '</b><i>' + kidA(esc(c.p)) + '</i><em>' + esc(c.w) + '</em></span>';
+      }).join("") + '</div>';
+    if (it.fun) h += '<div class="lx-fun" style="margin-top:10px;">🎈 ' + esc(it.fun) + '</div>';
+    return h;
+  }
+
+  // 谚语：原文（楷体+拼音）→ 意思 → 趣味点
+  function renderYanyu(it) {
+    return '<div class="label">💬 谚语 · 读一读' + gradeBadge(it) + '</div>' +
+      poemHTML(it.lines, it.py) +
+      '<div class="label">意思</div><div class="gushi-yi">' + esc(it.mean || "") + '</div>' +
+      (it.fun ? '<div class="lx-fun" style="margin-top:8px;">🎈 ' + esc(it.fun) + '</div>' : "");
+  }
+
+  // 歇后语：前半 ➜ 后半（谐音/俏皮话）+ 意思
+  function renderXiehouyu(it) {
+    return '<div class="label">😄 歇后语' + gradeBadge(it) + '</div>' +
+      '<div class="xh-box">' +
+        '<div class="xh-part">' +
+          '<div class="xh-text">' + esc(it.first) + '</div>' +
+          '<div class="xh-py">' + kidA(esc(it.py1 || "")) + '</div>' +
+        '</div>' +
+        '<div class="xh-arrow">➜</div>' +
+        '<div class="xh-part">' +
+          '<div class="xh-text xh-ans">' + esc(it.second) + '</div>' +
+          '<div class="xh-py">' + kidA(esc(it.py2 || "")) + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="label">意思</div><div class="gushi-yi">' + esc(it.mean || "") + '</div>' +
+      (it.fun ? '<div class="lx-fun" style="margin-top:8px;">🎈 ' + esc(it.fun) + '</div>' : "");
   }
 
   // 汉字启蒙 · 字卡滑动展示：每张卡片一个字，左右滑动 / 点箭头切换
