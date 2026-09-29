@@ -6,7 +6,7 @@
  *
  * 数据结构：
  *   CURRICULUM = [ { day, date, theme, items:[...], practice:[...], flashcards:[...] } ]
- *   item.type ∈ tongyao|gushi|chengyu|hanzi|chuantong|meiwen|shenhua
+ *   item.type ∈ tongyao|gushi|chengyu|hanzi|chuantong|meiwen|shenhua|lunyu|xiaoguwen|qianziwen
  *   practice 每题: { q, type:'choice'|'fill'|'match'|'judge', options?, answer, pairs?, explain }
  *   flashcards: { word, pinyin, mean, emoji, example? }
  * 说明：拼音中的 a 由渲染层统一转为儿童友好的 ɑ（U+0251），此处仍写标准 a。
@@ -659,6 +659,347 @@ window.CURRICULUM = [
       { word: "分类", pinyin: "fēn lèi", mean: "按相同点分成一类类。", emoji: "🗂️" },
       { word: "表达", pinyin: "biǎo dá", mean: "把自己的想法说出来。", emoji: "🗣️" }
     ]
+  },
+
+  /* ===================== Day 11 · 国学周 ===================== */
+  {
+    day: 11,
+    date: "第 11 天",
+    theme: "国学启程 · 论语与司马光",
+    items: [
+      {
+        type: "lunyu",
+        title: "论语 · 学而时习",
+        emoji: "📚",
+        grade: "小学",
+        lines: [
+          { text: "子曰：『学而时习之，不亦说乎？』", py: "zǐ yuē xué ér shí xí zhī bù yì yuè hū",
+            mean: "孔子说：『学了知识又按时温习，不是很快乐吗？』",
+            fun: "『说』在这里读 yuè，就是『悦』——开心。复习像游戏二周目，越玩越顺手！" },
+          { text: "子曰：『有朋自远方来，不亦乐乎？』", py: "zǐ yuē yǒu péng zì yuǎn fāng lái bù yì lè hū",
+            mean: "孔子说：『有朋友从远方来一起学习，不是很快乐吗？』",
+            fun: "两千多年前的孔子也喜欢『好朋友来家里玩』！学习有朋友陪，快乐加倍。" }
+        ],
+        tip: "拍手读两遍原文，再让孩子用白话讲给玩具听；强调『时习』=每天翻一翻学过的字卡。"
+      },
+      {
+        type: "xiaoguwen",
+        title: "小古文 · 司马光",
+        emoji: "🏺",
+        grade: "小学",
+        lines: ["群儿戏于庭，", "一儿登瓮，", "足跌没水中。", "众皆弃去，", "光持石击瓮破之，", "水迸，儿得活。"],
+        py: ["qún ér xì yú tíng", "yī ér dēng wèng", "zú diē mò shuǐ zhōng", "zhòng jiē qì qù", "guāng chí shí jī wèng pò zhī", "shuǐ bèng ér dé huó"],
+        notes: [
+          { w: "戏", m: "玩耍" }, { w: "庭", m: "院子" }, { w: "瓮", m: "口小肚大的水缸" },
+          { w: "没", m: "淹没" }, { w: "皆", m: "都" }, { w: "持", m: "拿着" }, { w: "迸", m: "涌出" }
+        ],
+        yi: "一群孩子在院子里玩耍，一个孩子爬上大水缸，一失足掉进去被水淹没。别的孩子都吓得跑开了，司马光却拿起石头把水缸砸破，水一下子涌出来，孩子得救了。",
+        fun: "司马光砸缸时只有七岁，和你差不多大！冷静 + 动脑，比力气更管用。",
+        tip: "玩『如果你在场怎么办』：说出 3 种救人办法（喊大人、找绳子、砸缸），比一比谁的办法最稳。"
+      },
+      {
+        type: "qianziwen",
+        title: "千字文 · 天地玄黄",
+        emoji: "🌌",
+        grade: "小学",
+        lines: ["天地玄黄，", "宇宙洪荒。", "日月盈昃，", "辰宿列张。"],
+        py: ["tiān dì xuán huáng", "yǔ zhòu hóng huāng", "rì yuè yíng zè", "chén xiù liè zhāng"],
+        pairs: [
+          { text: "天地玄黄", mean: "天是深青色的，地是黄色的（古人眼里天地的颜色）" },
+          { text: "宇宙洪荒", mean: "宇宙刚形成时，一片辽阔混沌" },
+          { text: "日月盈昃", mean: "月亮圆了又缺，太阳升起又西斜" },
+          { text: "辰宿列张", mean: "满天星斗排列散布在夜空中" }
+        ],
+        fun: "《千字文》是 1500 年前的『超级识字课本』：1000 个字不重样，还能讲天文地理！",
+        tip: "四字一句打节拍念：『天地—玄黄』，像念 rap；晚上抬头找一找『辰宿』。"
+      }
+    ],
+    practice: [
+      { q: "『学而时习之，不亦说乎』里『说』的意思是？", type: "choice", options: ["快乐", "说话", "唱歌"], answer: "快乐", explain: "说 = 悦，快乐。" },
+      { q: "《司马光》里，掉进水缸的小朋友是怎么得救的？", type: "choice", options: ["司马光拿石头砸破了缸", "他自己游了出来", "大人把他捞了出来"], answer: "司马光拿石头砸破了缸", explain: "光持石击瓮破之，水迸，儿得活。" },
+      { q: "连线：古文词语和意思。", type: "match", pairs: [{left:"戏", right:"玩耍"}, {left:"瓮", right:"大水缸"}, {left:"迸", right:"涌出"}], explain: "戏=玩耍；瓮=水缸；迸=涌出。" },
+      { q: "请补充《千字文》：天地玄黄，宇宙____。", type: "fill", answer: "洪荒", explain: "宇宙洪荒。" },
+      { q: "《千字文》是谁编写的启蒙读物？", type: "choice", options: ["周兴嗣", "孔子", "李白"], answer: "周兴嗣", explain: "南朝梁的周兴嗣奉旨用一千个不重复的字编成。" },
+      { q: "判断：《司马光》的故事告诉我们，遇到急事要冷静想办法。", type: "judge", answer: true, explain: "司马光没有慌，用砸缸的办法救人。" },
+      { q: "判断：《千字文》全文有一千个不重复的字。", type: "judge", answer: true, explain: "千字文 = 一千个不重样的字。" }
+    ],
+    flashcards: [
+      { word: "温习", pinyin: "wēn xí", mean: "再学一遍学过的知识，记得更牢。", emoji: "🔁", example: "每天温习字卡，是『学而时习之』。" },
+      { word: "水缸", pinyin: "shuǐ gāng", mean: "装水的大缸，古文里叫『瓮』。", emoji: "🏺" },
+      { word: "宇宙", pinyin: "yǔ zhòu", mean: "上下四方的空间和古往今来的时间。", emoji: "🌌" },
+      { word: "洪荒", pinyin: "hóng huāng", mean: "远古时代混沌辽阔的样子。", emoji: "🌊" }
+    ]
+  },
+
+  /* ===================== Day 12 ===================== */
+  {
+    day: 12,
+    date: "第 12 天",
+    theme: "寓言小古文 · 守株待兔",
+    items: [
+      {
+        type: "lunyu",
+        title: "论语 · 三人行",
+        emoji: "📚",
+        grade: "小学",
+        lines: [
+          { text: "子曰：『三人行，必有我师焉。』", py: "zǐ yuē sān rén xíng bì yǒu wǒ shī yān",
+            mean: "孔子说：『几个人一起走，其中一定有能当我老师的人。』",
+            fun: "会修玩具的爷爷、跳绳最厉害的同桌，都能当你的『小老师』！" },
+          { text: "『择其善者而从之，其不善者而改之。』", py: "zé qí shàn zhě ér cóng zhī qí bù shàn zhě ér gǎi zhī",
+            mean: "『学习别人的优点；看到别人的缺点，就反省自己有没有、改掉它。』",
+            fun: "像逛超市挑苹果：好的放进篮子，坏的提醒自己也别做。" }
+        ],
+        tip: "玩『今天谁是我的小老师』：让孩子说一个今天从别人身上学到的东西。"
+      },
+      {
+        type: "xiaoguwen",
+        title: "小古文 · 守株待兔",
+        emoji: "🐰",
+        grade: "小学",
+        lines: ["宋人有耕者。", "田中有株，", "兔走触株，折颈而死。", "因释其耒而守株，", "冀复得兔。", "兔不可复得，", "而身为宋国笑。"],
+        py: ["sòng rén yǒu gēng zhě", "tián zhōng yǒu zhū", "tù zǒu chù zhū zhé jǐng ér sǐ", "yīn shì qí lěi ér shǒu zhū", "jì fù dé tù", "tù bù kě fù dé", "ér shēn wéi sòng guó xiào"],
+        notes: [
+          { w: "耕者", m: "种田的人" }, { w: "株", m: "树桩" }, { w: "走", m: "跑" },
+          { w: "释", m: "放下" }, { w: "耒", m: "农具" }, { w: "冀", m: "希望" }, { w: "身", m: "自己" }
+        ],
+        yi: "宋国有个种田人，田里有个树桩。一只兔子飞奔过来撞上树桩，折断脖子死了。种田人于是放下农具，天天守着树桩，希望再捡到兔子。兔子再也没来，他自己却成了宋国人的笑话。",
+        fun: "古文里的『走』是『跑』！古人『走路』要说『行』——兔子要是慢慢『行』，就不会撞树啦。",
+        tip: "和第 5 天学过的成语『守株待兔』对照读：先回忆白话故事，再指读古文，让孩子发现成语是从古文里长出来的。"
+      },
+      {
+        type: "qianziwen",
+        title: "千字文 · 寒来暑往",
+        emoji: "🍂",
+        grade: "小学",
+        lines: ["寒来暑往，", "秋收冬藏。", "闰余成岁，", "律吕调阳。"],
+        py: ["hán lái shǔ wǎng", "qiū shōu dōng cáng", "rùn yú chéng suì", "lǜ lǚ tiáo yáng"],
+        pairs: [
+          { text: "寒来暑往", mean: "寒冬来了，酷暑过去，四季不断轮换" },
+          { text: "秋收冬藏", mean: "秋天收割庄稼，冬天把粮食储藏起来" },
+          { text: "闰余成岁", mean: "历法多出的日子攒成闰月，合成完整的一年" },
+          { text: "律吕调阳", mean: "古人用十二根律管校正音律、对应节气" }
+        ],
+        fun: "闰月就像时间的小口袋：多出来的日子攒一攒，变成一整个月！",
+        tip: "结合家里的日历找一找『闰月』；背『寒来暑往，秋收冬藏』时配上四季图片。"
+      }
+    ],
+    practice: [
+      { q: "『三人行，必有我师焉』告诉我们什么？", type: "choice", options: ["要虚心向别人学习", "三个人才能出门", "老师一定有三个人"], answer: "要虚心向别人学习", explain: "每个人都有值得学习的地方。" },
+      { q: "《守株待兔》里『兔走触株』的『走』在古文中是？", type: "choice", options: ["跑", "走路", "跳"], answer: "跑", explain: "古文『走』= 跑。" },
+      { q: "请补充：兔不可复得，而身为宋国____。", type: "fill", answer: "笑", explain: "他自己成了宋国人的笑话。" },
+      { q: "连线：古文词语和意思。", type: "match", pairs: [{left:"株", right:"树桩"}, {left:"耒", right:"农具"}, {left:"冀", right:"希望"}], explain: "株=树桩；耒=农具；冀=希望。" },
+      { q: "判断：农夫最后又等到了很多兔子。", type: "judge", answer: false, explain: "兔不可复得——兔子再也没有来过。" },
+      { q: "『寒来暑往』说的是什么？", type: "choice", options: ["四季不断轮换", "冬天很冷", "夏天很热"], answer: "四季不断轮换", explain: "寒暑来往 = 季节更替。" },
+      { q: "判断：『秋收冬藏』是说秋天收获、冬天储藏。", type: "judge", answer: true, explain: "收 = 收割，藏 = 储藏。" }
+    ],
+    flashcards: [
+      { word: "树桩", pinyin: "shù zhuāng", mean: "砍倒大树后留在土里的根和矮干。", emoji: "🪵" },
+      { word: "农具", pinyin: "nóng jù", mean: "种田用的工具，古文里叫『耒』。", emoji: "⛏️" },
+      { word: "虚心", pinyin: "xū xīn", mean: "不自满、愿意向别人学习。", emoji: "🙇" },
+      { word: "四季", pinyin: "sì jì", mean: "春夏秋冬，一年四个季节。", emoji: "🍂" }
+    ]
+  },
+
+  /* ===================== Day 13 ===================== */
+  {
+    day: 13,
+    date: "第 13 天",
+    theme: "智慧小古文 · 曹冲称象",
+    items: [
+      {
+        type: "lunyu",
+        title: "论语 · 温故知新",
+        emoji: "📚",
+        grade: "小学",
+        lines: [
+          { text: "子曰：『温故而知新，可以为师矣。』", py: "zǐ yuē wēn gù ér zhī xīn kě yǐ wéi shī yǐ",
+            mean: "孔子说：『温习学过的知识，又能从中得到新的理解，这样的人就可以当老师了。』",
+            fun: "昨天学的字，今天再看一眼，说不定能发现新秘密——这就是『温故知新』！" }
+        ],
+        tip: "把『翻字卡』和这句挂钩：复习不是重复，是『挖新宝藏』。"
+      },
+      {
+        type: "xiaoguwen",
+        title: "小古文 · 曹冲称象",
+        emoji: "🐘",
+        grade: "小学",
+        lines: ["冲少聪察，", "生五六岁，智若成人。", "时孙权致巨象，", "太祖欲知其重，", "访之群下，咸莫能出其理。", "冲曰：『置象船上，刻其水痕，", "称物载之，则可知矣。』"],
+        py: ["chōng shào cōng chá", "shēng wǔ liù suì zhì ruò chéng rén", "shí sūn quán zhì jù xiàng", "tài zǔ yù zhī qí zhòng", "fǎng zhī qún xià xián mò néng chū qí lǐ", "chōng yuē zhì xiàng chuán shàng kè qí shuǐ hén", "chēng wù zài zhī zé kě zhī yǐ"],
+        notes: [
+          { w: "聪察", m: "聪明会观察" }, { w: "致", m: "送来" }, { w: "太祖", m: "曹操" },
+          { w: "访", m: "询问" }, { w: "咸", m: "都" }, { w: "置", m: "放" }, { w: "校", m: "比较核对" }
+        ],
+        yi: "曹冲从小聪明会观察，五六岁时想法就像大人。当时孙权送来一头大象，曹操想知道它有多重，问大臣们，都想不出办法。曹冲说：『把大象赶上大船，在船舷刻下水面到达的痕迹，再装石头到同样的痕迹，称一称石头，就知道大象多重了。』",
+        fun: "五六岁的小孩赢了满朝大臣！用『船 + 石头』代替超级大秤——换个思路，难题就开了。",
+        tip: "洗澡时用脸盆 + 玩具船做浮力小实验：放玩具看水位上升，亲身体会『水痕称重』的原理。"
+      },
+      {
+        type: "qianziwen",
+        title: "千字文 · 云腾致雨",
+        emoji: "🌦️",
+        grade: "小学",
+        lines: ["云腾致雨，", "露结为霜。", "金生丽水，", "玉出昆冈。"],
+        py: ["yún téng zhì yǔ", "lù jié wéi shuāng", "jīn shēng lì shuǐ", "yù chū kūn gāng"],
+        pairs: [
+          { text: "云腾致雨", mean: "云气上升，聚集多了就变成雨落下来" },
+          { text: "露结为霜", mean: "露水遇到寒冷，就凝结成霜" },
+          { text: "金生丽水", mean:"金子产在美丽的丽水（金沙江）一带" },
+          { text: "玉出昆冈", mean: "美玉出自昆仑山冈" }
+        ],
+        fun: "雨是云『攒』出来的，霜是露水『冻』出来的——明早去阳台找找霜！",
+        tip: "天冷时观察草叶上的霜，摸一摸再说『露结为霜』，把四字句贴在生活里。"
+      }
+    ],
+    practice: [
+      { q: "『温故而知新』里『故』指的是？", type: "choice", options: ["学过的知识", "故事", "故乡"], answer: "学过的知识", explain: "故 = 旧的、学过的；新 = 新的理解。" },
+      { q: "曹冲用什么办法称出大象的重量？", type: "choice", options: ["赶上船刻水痕，再装石头称", "用一根超级大秤", "让大象站在跷跷板上"], answer: "赶上船刻水痕，再装石头称", explain: "置象船上，刻其水痕，称物载之。" },
+      { q: "请补充：置象船上，刻其____。", type: "fill", answer: "水痕", explain: "刻下水面到达的痕迹。" },
+      { q: "连线：古文词语和意思。", type: "match", pairs: [{left:"咸", right:"都"}, {left:"置", right:"放"}, {left:"访", right:"询问"}], explain: "咸=都；置=放；访=询问。" },
+      { q: "判断：大臣们都想出了称象的好办法。", type: "judge", answer: false, explain: "咸莫能出其理——谁都想不出来。" },
+      { q: "『云腾致雨，露结为霜』讲的是？", type: "choice", options: ["天气现象的形成", "做饭的方法", "花草的名字"], answer: "天气现象的形成", explain: "云变成雨，露结成霜。" },
+      { q: "判断：『金生丽水，玉出昆冈』说明古人知道金子和玉石的产地。", type: "judge", answer: true, explain: "丽水出金、昆冈出玉。" }
+    ],
+    flashcards: [
+      { word: "温故", pinyin: "wēn gù", mean: "温习学过的知识。", emoji: "📖" },
+      { word: "办法", pinyin: "bàn fǎ", mean: "解决问题的方法。", emoji: "💡" },
+      { word: "大象", pinyin: "dà xiàng", mean: "陆地上最大的动物，长鼻子大耳朵。", emoji: "🐘" },
+      { word: "寒霜", pinyin: "hán shuāng", mean: "天冷时水汽结成的白色冰晶。", emoji: "❄️" }
+    ]
+  },
+
+  /* ===================== Day 14 ===================== */
+  {
+    day: 14,
+    date: "第 14 天",
+    theme: "思辨小古文 · 刻舟求剑",
+    items: [
+      {
+        type: "lunyu",
+        title: "论语 · 知者不惑",
+        emoji: "📚",
+        grade: "初中",
+        lines: [
+          { text: "子曰：『知者不惑，仁者不忧，勇者不惧。』", py: "zǐ yuē zhì zhě bù huò rén zhě bù yōu yǒng zhě bù jù",
+            mean: "孔子说：『有智慧的人不迷惑，有仁德的人不忧愁，勇敢的人不畏惧。』",
+            fun: "『知』在这里通『智』——智慧。背下这句，就像集齐三颗勇气宝石！" }
+        ],
+        tip: "标『初中』的句子只要求读顺、知大意；做成『智慧—仁爱—勇敢』三面小旗贴墙上。"
+      },
+      {
+        type: "xiaoguwen",
+        title: "小古文 · 刻舟求剑",
+        emoji: "⚔️",
+        grade: "小学",
+        lines: ["楚人有涉江者，", "其剑自舟中坠于水，", "遽契其舟，曰：", "『是吾剑之所从坠。』", "舟止，从其所契者入水求之。", "舟已行矣，而剑不行，", "求剑若此，不亦惑乎！"],
+        py: ["chǔ rén yǒu shè jiāng zhě", "qí jiàn zì zhōu zhōng zhuì yú shuǐ", "jù qì qí zhōu yuē", "shì wú jiàn zhī suǒ cóng zhuì", "zhōu zhǐ cóng qí suǒ qì zhě rù shuǐ qiú zhī", "zhōu yǐ xíng yǐ ér jiàn bù xíng", "qiú jiàn ruò cǐ bù yì huò hū"],
+        notes: [
+          { w: "涉", m: "渡过" }, { w: "坠", m: "掉下" }, { w: "遽", m: "急忙" },
+          { w: "契", m: "用刀刻记号" }, { w: "是", m: "这里" }, { w: "惑", m: "糊涂" }
+        ],
+        yi: "楚国有个渡江的人，他的剑从船上掉进水里。他急忙在船舷上刻了个记号，说：『这是我的剑掉下去的地方。』船停后，他从刻记号的地方下水找剑。船已经向前走了，剑却没有走，像这样找剑，不是太糊涂了吗！",
+        fun: "船在走、剑不动——在船舷刻记号，就像给『移动的房子』贴门牌，当然找不到啦！",
+        tip: "画一条会『动』的船：把纸片船放脸盆上推着走，让孩子明白参照物在动，记号就失效。"
+      },
+      {
+        type: "qianziwen",
+        title: "千字文 · 海咸河淡",
+        emoji: "🌊",
+        grade: "小学",
+        lines: ["海咸河淡，", "鳞潜羽翔。", "龙师火帝，", "鸟官人皇。"],
+        py: ["hǎi xián hé dàn", "lín qián yǔ xiáng", "lóng shī huǒ dì", "niǎo guān rén huáng"],
+        pairs: [
+          { text: "海咸河淡", mean: "海水是咸的，河水是淡的" },
+          { text: "鳞潜羽翔", mean: "鱼儿在水里游，鸟儿在天上飞" },
+          { text: "龙师火帝", mean: "传说中以龙命名官职的伏羲氏、教人用火的神农氏" },
+          { text: "鸟官人皇", mean: "以鸟命名官职的少昊氏和远古的人皇氏——都是上古贤君" }
+        ],
+        fun: "『鳞』是鱼、『羽』是鸟——古人用身上的『装备』给动物分队！",
+        tip: "画『水—空』两格图，让孩子把动物卡片分到『鳞潜』和『羽翔』两队。"
+      }
+    ],
+    practice: [
+      { q: "『知者不惑』里『知』通哪个字？", type: "choice", options: ["智", "知", "之"], answer: "智", explain: "知 = 智，智慧。" },
+      { q: "楚人为什么在船舷上刻记号？", type: "choice", options: ["剑从那里掉进水里，他想照着记号找", "他想给船做装饰", "他怕忘记回家的路"], answer: "剑从那里掉进水里，他想照着记号找", explain: "是吾剑之所从坠——这是我的剑掉下去的地方。" },
+      { q: "判断：船停了以后，楚人从刻记号的地方下水，找到了剑。", type: "judge", answer: false, explain: "舟已行矣，而剑不行——船走了，剑没走，当然找不到。" },
+      { q: "请补充：舟已行矣，而剑____。", type: "fill", answer: "不行", explain: "不行 = 没有走。" },
+      { q: "连线：古文词语和意思。", type: "match", pairs: [{left:"涉", right:"渡过"}, {left:"遽", right:"急忙"}, {left:"契", right:"刻记号"}], explain: "涉=渡过；遽=急忙；契=刻。" },
+      { q: "这个故事告诉我们什么道理？", type: "choice", options: ["情况变了，办法也要跟着变", "剑要拿稳别掉水里", "坐船不能刻记号"], answer: "情况变了，办法也要跟着变", explain: "世界在动，死守旧记号没用。" },
+      { q: "『海咸河淡』的意思是？", type: "choice", options: ["海水是咸的，河水是淡的", "海比河大", "鱼和鸟是好朋友"], answer: "海水是咸的，河水是淡的", explain: "咸/淡说的是味道。" }
+    ],
+    flashcards: [
+      { word: "迷惑", pinyin: "mí huò", mean: "心里糊涂、分不清对错。", emoji: "😵" },
+      { word: "记号", pinyin: "jì hao", mean: "做的小标记，帮助记住位置。", emoji: "✏️" },
+      { word: "变化", pinyin: "biàn huà", mean: "情况跟原来不一样了。", emoji: "🔄" },
+      { word: "勇敢", pinyin: "yǒng gǎn", mean: "不害怕、敢面对困难。", emoji: "🦁" }
+    ]
+  },
+
+  /* ===================== Day 15 ===================== */
+  {
+    day: 15,
+    date: "第 15 天",
+    theme: "初中衔接 · 陋室铭",
+    items: [
+      {
+        type: "lunyu",
+        title: "论语 · 学而不思",
+        emoji: "📚",
+        grade: "初中",
+        lines: [
+          { text: "子曰：『学而不思则罔，思而不学则殆。』", py: "zǐ yuē xué ér bù sī zé wǎng sī ér bù xué zé dài",
+            mean: "孔子说：『只读书不动脑，就会迷茫而没有收获；只空想不读书，就会疑惑而无定见。』",
+            fun: "学是『吃饭』，思是『消化』——只吃不动脑会积食，只动脑不吃饭会饿晕！" }
+        ],
+        tip: "初中《论语十二章》必背句；让孩子举一例：哪次『光背不想』结果忘了？"
+      },
+      {
+        type: "xiaoguwen",
+        title: "小古文 · 陋室铭（节选）",
+        emoji: "🛖",
+        grade: "初中",
+        lines: ["山不在高，有仙则名。", "水不在深，有龙则灵。", "斯是陋室，惟吾德馨。"],
+        py: ["shān bù zài gāo yǒu xiān zé míng", "shuǐ bù zài shēn yǒu lóng zé líng", "sī shì lòu shì wéi wú dé xīn"],
+        notes: [
+          { w: "名", m: "出名" }, { w: "灵", m: "有灵气" }, { w: "斯", m: "这" },
+          { w: "惟", m: "只" }, { w: "德馨", m: "品德像香气一样远扬" }
+        ],
+        yi: "山不在于高，有仙人住着就会出名；水不在于深，有龙住着就会显灵。这间屋子虽然简陋，但因为我（刘禹锡）品德高尚，它也变得香气满屋。",
+        fun: "房子好不好，不看大不大，看住在里面的人『香不香』！刘禹锡被贬官住小破屋，还写出这么神气的文章。",
+        tip: "这是初中课文节选，读顺即可、不必深讲；让孩子用『不在于…在于…』造句，如『玩具不在于多，在于好玩』。"
+      },
+      {
+        type: "qianziwen",
+        title: "千字文 · 知过必改",
+        emoji: "⭐",
+        grade: "小学",
+        lines: ["知过必改，", "得能莫忘。", "罔谈彼短，", "靡恃己长。"],
+        py: ["zhī guò bì gǎi", "dé néng mò wàng", "wǎng tán bǐ duǎn", "mí shì jǐ cháng"],
+        pairs: [
+          { text: "知过必改", mean: "知道自己错了，就一定要改正" },
+          { text: "得能莫忘", mean: "学会的本领，不要忘了（要常复习）" },
+          { text: "罔谈彼短", mean: "不要议论别人的短处" },
+          { text: "靡恃己长", mean: "不要仗着自己的长处而骄傲" }
+        ],
+        fun: "这四句是古人的『好习惯打卡表』：改错、温习、不嚼舌根、不骄傲！",
+        tip: "把四句做成 4 张习惯卡贴墙上，本周每做到一条就贴一颗星。"
+      }
+    ],
+    practice: [
+      { q: "『学而不思则罔』里『罔』的意思是？", type: "choice", options: ["迷茫而没有收获", "渔网", "忘记"], answer: "迷茫而没有收获", explain: "只学不想，就会迷惘无所得。" },
+      { q: "『斯是陋室，惟吾德馨』夸的是什么？", type: "choice", options: ["住的人品德高尚", "屋子又大又新", "屋子很香"], answer: "住的人品德高尚", explain: "德馨 = 品德像香气远扬。" },
+      { q: "请补充：山不在高，有仙则____。", type: "fill", answer: "名", explain: "有仙则名——有仙人就出名。" },
+      { q: "连线：词语和意思。", type: "match", pairs: [{left:"仙", right:"让山出名"}, {left:"龙", right:"让水显灵"}, {left:"德馨", right:"品德远扬"}], explain: "山不在高有仙则名；水不在深有龙则灵。" },
+      { q: "判断：刘禹锡觉得屋子简陋，就住得很不开心。", type: "judge", answer: false, explain: "他觉得只要自己品德好，陋室也『何陋之有』。" },
+      { q: "『知过必改』告诉我们什么？", type: "choice", options: ["知道错了就要改正", "犯错没关系", "不要学习本领"], answer: "知道错了就要改正", explain: "过 = 过错，必改 = 一定要改。" },
+      { q: "判断：学习只要多读书，不需要动脑筋想。", type: "judge", answer: false, explain: "学而不思则罔——学思要结合。" }
+    ],
+    flashcards: [
+      { word: "思考", pinyin: "sī kǎo", mean: "动脑筋想问题。", emoji: "🤔" },
+      { word: "品德", pinyin: "pǐn dé", mean: "一个人的品质和道德。", emoji: "🌟" },
+      { word: "简陋", pinyin: "jiǎn lòu", mean: "简单破旧、不完备。", emoji: "🛖" },
+      { word: "改正", pinyin: "gǎi zhèng", mean: "把错误改过来。", emoji: "✅" }
+    ]
   }
 ];
 
@@ -670,5 +1011,8 @@ window.SECTION_META = {
   hanzi:     { name: "汉字启蒙", icon: "✍️" },
   chuantong: { name: "传统文化", icon: "🏮" },
   meiwen:    { name: "名家美文", icon: "📖" },
-  shenhua:   { name: "神话历史", icon: "🌟" }
+  shenhua:   { name: "神话历史", icon: "🌟" },
+  lunyu:     { name: "论语金句", icon: "📚" },
+  xiaoguwen: { name: "小古文",   icon: "🖋️" },
+  qianziwen: { name: "千字文",   icon: "🌌" }
 };
