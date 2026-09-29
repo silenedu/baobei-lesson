@@ -316,14 +316,6 @@ body {
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-s);
   padding: 12px 10px; display: flex; flex-direction: column; align-items: center; gap: 8px;
 }
-.hz-oracle { text-align: center; }
-.hz-oracle-img {
-  width: 62px; height: 62px; margin: 0 auto; background: #FBF6EC;
-  border: 1px solid #E8DDC6; border-radius: 10px; padding: 4px;
-}
-.hz-oracle-img svg { width: 100%; height: 100%; display: block; }
-.hz-oracle-rad { display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 800; color: var(--accent-d); }
-.hz-oracle-label { font-size: 11px; color: var(--ink-soft); margin-top: 3px; }
 .hz-main { display: flex; flex-direction: column; align-items: center; gap: 7px; }
 .hz-grid {
   width: 150px; height: 150px; position: relative; border-radius: 8px;
@@ -344,6 +336,38 @@ body {
 .hz-meta { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
 .hz-theory { font-size: 13px; color: var(--ink); line-height: 1.6; margin-top: 5px; }
 .hz-words { font-size: 13px; color: var(--accent-d); font-weight: 600; margin-top: 4px; }
+
+/* ===================== 汉字启蒙 · 字卡滑动展示 ===================== */
+.hz-deck { margin-top: 12px; overflow: hidden; user-select: none; -webkit-user-select: none; }
+.hz-track { display: flex; transition: transform .32s cubic-bezier(.22,.61,.36,1); will-change: transform; }
+.hz-flash {
+  position: relative;
+  flex: 0 0 100%; min-width: 100%;
+  background: linear-gradient(160deg,#FBFDFB,#E9F3EE);
+  border: 1.5px solid var(--line); border-radius: 22px;
+  padding: 18px 16px 22px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.hz-oracle {
+  position: absolute; top: 14px; right: 14px; text-align: center; line-height: 1;
+}
+.hz-oracle-img {
+  width: 50px; height: 50px; margin: 0 auto; background: #FBF6EC;
+  border: 1px solid #E8DDC6; border-radius: 12px; padding: 4px;
+}
+.hz-oracle-img svg { width: 100%; height: 100%; display: block; }
+.hz-oracle-rad { display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; color: var(--accent-d); }
+.hz-oracle-label { font-size: 10px; color: var(--ink-soft); margin-top: 2px; }
+.hz-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+.hz-controls button {
+  width: 48px; height: 48px; border-radius: 50%; border: none; font-size: 26px; font-weight: 800; line-height: 1;
+  background: linear-gradient(135deg,#8FBFD6,#6FA8C7); color: #fff; cursor: pointer; box-shadow: var(--shadow-s);
+  display: flex; align-items: center; justify-content: center; transition: filter .15s;
+}
+.hz-controls button:active { filter: brightness(.94); }
+.hz-controls button:disabled { opacity: .35; cursor: default; box-shadow: none; }
+.hz-prog { font-weight: 800; color: var(--ink-soft); font-size: 15px; }
+.hz-hint { text-align: center; font-size: 13px; color: var(--ink-soft); margin-top: 12px; }
 
 /* 课件弹层允许滚动（汉字启蒙有 4 字） */
 .modal-card { max-height: 90vh; overflow-y: auto; }
@@ -398,3 +422,38 @@ body {
   .tab span { font-size: 16px; }
 }
 
+
+/* ===================== 国学板块（论语 / 小古文 / 千字文）===================== */
+.gx-grade {
+  display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 800; color: #fff;
+  border-radius: 999px; padding: 2px 9px; vertical-align: middle; letter-spacing: 1px;
+}
+.gx-pri { background: linear-gradient(135deg, var(--primary), var(--primary-d)); }
+.gx-mid { background: linear-gradient(135deg, #C79A6B, #A8743F); }
+
+.lx-item {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 12px 14px; margin-bottom: 10px; box-shadow: var(--shadow-s);
+}
+.lx-text { font-family: var(--kai); font-size: 21px; font-weight: 800; color: var(--ink); line-height: 1.7; }
+.lx-py { font-size: 14px; color: var(--accent-d); font-weight: 700; margin-top: 2px; }
+.lx-mean { font-size: 14px; color: var(--ink); margin-top: 6px; line-height: 1.6; }
+.lx-fun {
+  font-size: 13px; color: var(--primary-d); margin-top: 6px; line-height: 1.6;
+  background: var(--surface-2); border-radius: 10px; padding: 7px 10px;
+}
+
+.xw-notes { display: flex; flex-wrap: wrap; gap: 8px; }
+.xw-chip {
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px;
+  padding: 5px 12px; font-size: 13px; color: var(--ink);
+}
+.xw-chip b { color: var(--primary-d); margin-right: 2px; }
+
+.qw-pairs { display: flex; flex-direction: column; gap: 8px; }
+.qw-pair {
+  display: flex; gap: 10px; align-items: baseline;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px;
+}
+.qw-t { font-family: var(--kai); font-weight: 800; color: var(--ink); white-space: nowrap; font-size: 15.5px; }
+.qw-m { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
