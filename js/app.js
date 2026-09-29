@@ -512,10 +512,11 @@
     var idx = 0, correct = 0;
     var mask = document.createElement("div");
     mask.className = "quiz-mask";
-    mask.innerHTML = '<div class="quiz-top"><div class="quiz-prog"><i id="qProg"></i></div>' +
+    mask.innerHTML = '<div class="quiz-top"><button class="quiz-close" id="qClose" aria-label="返回课表">✕</button><div class="quiz-prog"><i id="qProg"></i></div>' +
       '<div class="quiz-meta"><span id="qNum"></span><span>每日练习 · 共 ' + qs.length + ' 题</span></div></div>' +
       '<div class="quiz-body" id="qBody"></div>';
     document.body.appendChild(mask);
+    $("#qClose").onclick = function () { document.body.removeChild(mask); setView("today"); };
 
     function finish() {
       state.practice[dayIdx] = true; saveState(); renderDayStrip();
