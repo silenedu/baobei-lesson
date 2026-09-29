@@ -191,6 +191,13 @@ body {
 /* ---------- Practice ---------- */
 .quiz-mask { position: fixed; inset: 0; background: linear-gradient(165deg, #EEF5EC 0%, #E6F0EA 48%, #EAF2EC 100%); z-index: 60; display: flex; flex-direction: column; }
 .quiz-top { padding: 14px 16px 6px; }
+.quiz-close {
+  float: right; width: 34px; height: 34px; margin: -2px -2px 0 10px;
+  border: 1px solid var(--line); border-radius: 50%; background: var(--surface);
+  color: var(--ink-soft); font-size: 16px; line-height: 1; cursor: pointer;
+  box-shadow: var(--shadow-s);
+}
+.quiz-close:active { transform: scale(.92); }
 .quiz-prog { height: 9px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
 .quiz-prog > i { display:block; height:100%; background: linear-gradient(90deg,var(--primary),var(--primary-d)); transition: width .25s; }
 .quiz-meta { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
@@ -497,3 +504,9 @@ body {
 .xh-text.xh-ans { color: var(--primary-d); }
 .xh-py { font-size: 13px; color: var(--accent-d); font-weight: 700; margin-top: 2px; }
 .xh-arrow { font-size: 26px; color: var(--accent); font-weight: 800; }
+
+.pp-tip {
+  margin-top: 10px; font-size: 13px; font-weight: 700; color: var(--primary-d);
+  background: linear-gradient(135deg,#FFF6E8,#FBEEDA); border: 1px dashed #E2C58E;
+  border-radius: 12px; padding: 8px 12px;
+}
