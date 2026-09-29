@@ -457,3 +457,43 @@ body {
 }
 .qw-t { font-family: var(--kai); font-weight: 800; color: var(--ink); white-space: nowrap; font-size: 15.5px; }
 .qw-m { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+
+/* ===================== 偏旁识字 / 歇后语 ===================== */
+.pp-hero {
+  display: flex; align-items: center; gap: 16px;
+  background: linear-gradient(160deg,#FBFDFB,#E9F3EE);
+  border: 1.5px solid var(--line); border-radius: 22px; box-shadow: var(--shadow);
+  padding: 16px 18px; margin-bottom: 12px;
+}
+.pp-radical {
+  font-family: var(--kai); font-size: 64px; font-weight: 800; color: var(--primary-d);
+  width: 96px; height: 96px; flex: 0 0 96px; display: flex; align-items: center; justify-content: center;
+  background: #fff; border: 2px solid var(--line); border-radius: 18px; box-shadow: var(--shadow-s);
+}
+.pp-name { font-size: 22px; font-weight: 800; color: var(--ink); }
+.pp-py { font-size: 15px; color: var(--accent-d); font-weight: 700; margin-top: 2px; }
+.pp-origin {
+  display: inline-block; margin-top: 6px; font-size: 13px; font-weight: 700; color: var(--primary-d);
+  background: var(--surface-2); border-radius: 999px; padding: 3px 10px;
+}
+.pp-chars { display: flex; flex-wrap: wrap; gap: 10px; }
+.pp-char {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: var(--shadow-s); padding: 8px 14px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+}
+.pp-char b { font-family: var(--kai); font-size: 26px; color: var(--ink); line-height: 1.2; }
+.pp-char i { font-style: normal; font-size: 12px; color: var(--accent-d); font-weight: 700; }
+.pp-char em { font-style: normal; font-size: 12.5px; color: var(--ink-soft); margin-top: 1px; }
+
+.xh-box {
+  display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+  background: linear-gradient(160deg,#FBFDFB,#E9F3EE);
+  border: 1.5px solid var(--line); border-radius: 22px; box-shadow: var(--shadow);
+  padding: 18px 14px; margin-bottom: 12px;
+}
+.xh-part { text-align: center; max-width: 46%; }
+.xh-text { font-family: var(--kai); font-size: 24px; font-weight: 800; color: var(--ink); line-height: 1.5; }
+.xh-text.xh-ans { color: var(--primary-d); }
+.xh-py { font-size: 13px; color: var(--accent-d); font-weight: 700; margin-top: 2px; }
+.xh-arrow { font-size: 26px; color: var(--accent); font-weight: 800; }
